@@ -25,11 +25,11 @@ After report: "masked_value": "****-****-****-0366"
 ### Step 1 — Clone the project
 
 ```bash
-git clone https://github.com/YOUR-GITHUB-USERNAME/dlp-scanner.git
+git clone https://github.com/Robinwood717/dlp-scanner.git
 cd dlp-scanner
 ```
 
-> Replace `YOUR-GITHUB-USERNAME` with your actual GitHub username.
+> Replace `Robinwood717` with your actual GitHub username.
 
 ### Step 2 — (Recommended) Create a virtual environment
 
