@@ -1,0 +1,5 @@
+# DLP Scanner — no external dependencies required.
+# All modules used are part of the Python standard library:
+#   re, os, csv, json, pathlib, dataclasses, datetime, argparse, logging, abc
+#
+# Requires Python >= 3.9

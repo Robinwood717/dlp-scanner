@@ -1,0 +1,30 @@
+Internal Audit Notes — Q2 2026
+================================
+
+During the quarterly review, several files were identified that may contain
+sensitive personal data. The following excerpts were flagged for manual review:
+
+1. An employee record contained a card number ending in 4242:
+   Card on file: 4111111111111111
+
+2. A vendor payment form referenced the Greek tax registry:
+   Supplier AFM: 123456787
+   Contact: vendor.support@supplier-gr.com
+
+3. A legacy export included contact details mixed into comments:
+   # Record exported by: admin@internal.company.org on 2026-06-15
+
+4. An international partner's file had the following entry:
+   Cardholder: Jane Doe  CC: 5500005555555559  expiry 09/28
+
+5. Test data from staging (should be filtered by validators):
+   Fake card: 0000000000000000
+   Partial: 4111-xxxx-xxxx
+   Invalid AFM: 000000001
+
+6. Additional valid AFM found in a scanned contract:
+   AFM contractor: 987654322
+
+7. Encoding stress test — see latin1_notes.txt for extended charset coverage.
+
+End of notes.

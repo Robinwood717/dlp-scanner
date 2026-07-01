@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DLP Scanner / Auditor — Documentation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: #fff;
+      padding: 60px 40px 50px;
+      text-align: center;
+    }
+    header h1 { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; }
+    header p  { font-size: 1.1rem; color: #a8b8d8; max-width: 640px; margin: 0 auto 28px; }
+    .badges   { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .badge {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.8rem;
+      color: #c8d8f0;
+      font-weight: 500;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #e0e8f5;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 24px;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+    }
+    nav a {
+      display: block;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #555;
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    nav a:hover { color: #0f3460; border-bottom-color: #0f3460; }
+
+    /* ── Layout ── */
+    .wrapper { max-width: 960px; margin: 0 auto; padding: 50px 24px 80px; }
+
+    /* ── Cards ── */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      padding: 36px 40px;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f3460;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8eef8;
+    }
+    h3 { font-size: 1rem; font-weight: 700; color: #1a1a2e; margin: 22px 0 10px; }
+    p  { margin-bottom: 14px; color: #444; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Steps ── */
+    .steps { counter-reset: step; display: flex; flex-direction: column; gap: 24px; }
+    .step  { display: flex; gap: 18px; align-items: flex-start; }
+    .step-num {
+      min-width: 36px; height: 36px;
+      background: #0f3460; color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.9rem;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .step-body h3 { margin-top: 0; }
+
+    /* ── Code ── */
+    pre {
+      background: #1a1a2e; color: #a8f0c6;
+      border-radius: 8px; padding: 18px 22px;
+      font-size: 0.88rem;
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      overflow-x: auto; margin: 12px 0; line-height: 1.6;
+    }
+    code {
+      background: #eef2fb; color: #0f3460;
+      border-radius: 4px; padding: 2px 7px;
+      font-size: 0.88em;
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+    }
+
+    /* ── Info / warn boxes ── */
+    .info-box {
+      border-left: 4px solid #0f3460; background: #eef2fb;
+      border-radius: 0 8px 8px 0; padding: 14px 18px;
+      margin: 16px 0; font-size: 0.93rem; color: #333;
+    }
+    .warn-box {
+      border-left: 4px solid #e07b00; background: #fff8ec;
+      border-radius: 0 8px 8px 0; padding: 14px 18px;
+      margin: 16px 0; font-size: 0.93rem; color: #5a3a00;
+    }
+
+    /* ── Tables ── */
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.93rem; }
+    th { background: #0f3460; color: #fff; text-align: left; padding: 10px 14px; font-weight: 600; }
+    td { padding: 10px 14px; border-bottom: 1px solid #e8eef8; color: #444; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #f8faff; }
+
+    /* ── Feature grid ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px; margin-top: 8px;
+    }
+    .feature-item {
+      background: #f4f7ff; border-radius: 8px;
+      padding: 16px 18px; font-size: 0.92rem;
+      color: #333; border: 1px solid #dce7ff;
+    }
+    .feature-item strong { display: block; color: #0f3460; margin-bottom: 4px; }
+
+    /* ── File tree ── */
+    .tree {
+      background: #1a1a2e; color: #c8d8f0;
+      border-radius: 8px; padding: 20px 24px;
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      font-size: 0.87rem; line-height: 1.9;
+    }
+    .tree .folder  { color: #7ec8e3; }
+    .tree .file    { color: #a8f0c6; }
+    .tree .comment { color: #6b7ea8; }
+
+    /* ════════════════════════════════════
+       ROADMAP SECTION
+    ════════════════════════════════════ */
+    .roadmap-intro {
+      background: linear-gradient(135deg, #0f3460, #1a1a2e);
+      border-radius: 12px;
+      padding: 36px 40px;
+      margin-bottom: 28px;
+      color: #fff;
+    }
+    .roadmap-intro h2 {
+      color: #fff;
+      border-bottom-color: rgba(255,255,255,0.2);
+      margin-bottom: 14px;
+    }
+    .roadmap-intro p { color: #a8b8d8; margin-bottom: 0; }
+
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .roadmap-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      overflow: hidden;
+    }
+    .roadmap-card-header {
+      padding: 18px 22px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #e8eef8;
+    }
+    .roadmap-card-header .icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .roadmap-card-header h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #0f3460;
+    }
+    .roadmap-card-header p {
+      margin: 2px 0 0;
+      font-size: 0.78rem;
+      color: #888;
+    }
+
+    .roadmap-items { padding: 14px 22px 18px; }
+    .roadmap-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f4fb;
+      font-size: 0.9rem;
+      color: #444;
+    }
+    .roadmap-item:last-child { border-bottom: none; }
+    .roadmap-item .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-top: 7px;
+      flex-shrink: 0;
+    }
+    .roadmap-item .item-body strong { display: block; color: #1a1a2e; font-size: 0.88rem; }
+    .roadmap-item .item-body span  { font-size: 0.8rem; color: #888; font-family: "Cascadia Code", Consolas, monospace; }
+
+    /* colour themes per card */
+    .theme-greek  .icon { background: #e8f0ff; color: #0f3460; }
+    .theme-greek  .dot  { background: #0f3460; }
+    .theme-fin    .icon { background: #e8fff2; color: #0a6640; }
+    .theme-fin    .dot  { background: #0a6640; }
+    .theme-tech   .icon { background: #fff3e8; color: #994400; }
+    .theme-tech   .dot  { background: #d46b00; }
+    .theme-person .icon { background: #fce8ff; color: #6b0080; }
+    .theme-person .dot  { background: #9c27b0; }
+    .theme-infra  .icon { background: #e8fffe; color: #006660; }
+    .theme-infra  .dot  { background: #009688; }
+    .theme-output .icon { background: #fff8e8; color: #806000; }
+    .theme-output .dot  { background: #f0a000; }
+
+    /* ── Status pill ── */
+    .pill {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .pill-live   { background: #e0f7ea; color: #1b6b35; }
+    .pill-soon   { background: #fff3cd; color: #7a5200; }
+    .pill-future { background: #f0f0f0; color: #666; }
+
+    /* ── Architecture callout ── */
+    .arch-callout {
+      background: #f4f7ff;
+      border: 1px solid #dce7ff;
+      border-radius: 10px;
+      padding: 22px 26px;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .arch-callout .arch-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .arch-callout h3 { margin-top: 0; color: #0f3460; }
+    .arch-callout p  { color: #444; margin-bottom: 0; font-size: 0.93rem; }
+
+    /* ── Footer ── */
+    footer { text-align: center; padding: 30px; font-size: 0.85rem; color: #888; }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <h1>DLP Scanner / Auditor</h1>
+  <p>Scan folders for exposed sensitive data and generate secure, masked audit reports.</p>
+  <div class="badges">
+    <span class="badge">Python 3.9+</span>
+    <span class="badge">ISO 27001 Aligned</span>
+    <span class="badge">No External Dependencies</span>
+    <span class="badge">MIT License</span>
+  </div>
+</header>
+
+<!-- ══ STICKY NAV ══ -->
+<nav>
+  <a href="#what">What it does</a>
+  <a href="#features">Features</a>
+  <a href="#start">Get Started</a>
+  <a href="#usage">Usage</a>
+  <a href="#report">Report</a>
+  <a href="#how">How it works</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#structure">Files</a>
+  <a href="#notes">Notes</a>
+</nav>
+
+<div class="wrapper">
+
+  <!-- ══ WHAT IT DOES ══ -->
+  <div class="card" id="what">
+    <h2>What does this tool do?</h2>
+    <p>
+      You point it at a folder on your computer. It automatically reads every
+      <code>.txt</code> and <code>.csv</code> file inside (including sub-folders),
+      searches for sensitive data, and writes a clean audit report.
+    </p>
+    <p>
+      The report <strong>never contains the real sensitive values</strong>. It only shows
+      a masked version so that the report itself cannot be used to steal data.
+    </p>
+    <table>
+      <thead><tr><th>What was found in the file</th><th>What appears in the report</th></tr></thead>
+      <tbody>
+        <tr><td>Credit card &nbsp;<code>4532015112830366</code></td><td><code>****-****-****-0366</code></td></tr>
+        <tr><td>Greek AFM &nbsp;&nbsp;&nbsp;<code>123456787</code></td><td><code>XXXXXX787</code></td></tr>
+        <tr><td>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>alex@example.gr</code></td><td><code>****@example.gr</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ FEATURES ══ -->
+  <div class="card" id="features">
+    <h2>Key Features</h2>
+    <div class="feature-grid">
+      <div class="feature-item"><strong>Recursive scanning</strong>Automatically goes through all sub-folders inside the target directory.</div>
+      <div class="feature-item"><strong>Smart validation</strong>Uses real algorithms (Luhn, GSIS check-digit) — not just regex — to avoid false positives.</div>
+      <div class="feature-item"><strong>Data masking</strong>Raw values never appear in the output. The report is safe to share.</div>
+      <div class="feature-item"><strong>JSON &amp; CSV output</strong>Choose the format that works best for your workflow or reporting tool.</div>
+      <div class="feature-item"><strong>Encoding-aware</strong>Handles UTF-8 and Latin-1 files. Unreadable files are skipped gracefully.</div>
+      <div class="feature-item"><strong>Zero dependencies</strong>Uses only the Python standard library. No extra installs needed.</div>
+    </div>
+  </div>
+
+  <!-- ══ GET STARTED ══ -->
+  <div class="card" id="start">
+    <h2>Get Started in 3 Steps</h2>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Download the project</h3>
+          <pre>git clone https://github.com/YOUR_USERNAME/dlp-scanner.git
+cd dlp-scanner</pre>
+          <p>Or download the ZIP from GitHub and extract it.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Create a virtual environment <span style="font-weight:400;color:#888;">(recommended)</span></h3>
+          <pre># Create it
+python -m venv venv
+
+# Activate — Windows PowerShell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+venv\Scripts\activate
+
+# Activate — Command Prompt (cmd)
+venv\Scripts\activate.bat
+
+# Activate — macOS / Linux
+source venv/bin/activate</pre>
+          <div class="info-box">After activation you will see <code>(venv)</code> at the start of your terminal prompt.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Run your first scan</h3>
+          <pre>pip install -r requirements.txt
+python main.py --target sample_data --format both --output my_first_report</pre>
+          <div class="info-box"><strong>Windows note:</strong> If <code>python</code> gives an error, use <code>py</code> instead.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ USAGE ══ -->
+  <div class="card" id="usage">
+    <h2>Scanning Your Own Data</h2>
+
+    <h3>JSON report (default)</h3>
+    <pre>python main.py --target C:\path\to\your\folder</pre>
+
+    <h3>Both JSON and CSV at once</h3>
+    <pre>python main.py --target C:\path\to\your\folder --format both --output audit_july</pre>
+
+    <h3>See detailed progress while scanning</h3>
+    <pre>python main.py --target C:\path\to\your\folder --verbose</pre>
+
+    <h3>All available options</h3>
+    <table>
+      <thead><tr><th>Option</th><th>What it does</th><th>Default</th></tr></thead>
+      <tbody>
+        <tr><td><code>--target</code></td><td>The folder to scan</td><td>Current folder</td></tr>
+        <tr><td><code>--format</code></td><td><code>json</code>, <code>csv</code>, or <code>both</code></td><td><code>json</code></td></tr>
+        <tr><td><code>--output</code></td><td>Name for the report file (no extension)</td><td><code>dlp_report</code></td></tr>
+        <tr><td><code>--verbose</code></td><td>Show detailed scan log in the terminal</td><td>Off</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ REPORT ══ -->
+  <div class="card" id="report">
+    <h2>What the Report Looks Like</h2>
+
+    <h3>Terminal summary (always shown)</h3>
+    <pre>============================================================
+  DLP SCAN SUMMARY
+============================================================
+  Files scanned : 3
+  Files skipped : 0
+  Total findings: 25
+
+  Breakdown by data type:
+    Credit Card          8
+    Email                9
+    Greek AFM            8
+============================================================</pre>
+
+    <h3>JSON report</h3>
+    <pre>[
+  {
+    "timestamp":    "2026-07-01T10:30:00Z",
+    "file_path":    "C:/data/customers.csv",
+    "line_number":  2,
+    "data_type":    "Credit Card",
+    "masked_value": "****-****-****-0366"
+  },
+  {
+    "timestamp":    "2026-07-01T10:30:00Z",
+    "file_path":    "C:/data/notes.txt",
+    "line_number":  11,
+    "data_type":    "Greek AFM",
+    "masked_value": "XXXXXX787"
+  }
+]</pre>
+
+    <h3>CSV report</h3>
+    <pre>timestamp,file_path,line_number,data_type,masked_value
+2026-07-01T10:30:00Z,C:/data/customers.csv,2,Credit Card,****-****-****-0366
+2026-07-01T10:30:00Z,C:/data/notes.txt,11,Greek AFM,XXXXXX787</pre>
+  </div>
+
+  <!-- ══ HOW IT WORKS ══ -->
+  <div class="card" id="how">
+    <h2>How Detection Works</h2>
+    <p>The tool does not just match patterns. Every match is verified with a real mathematical check before being included in the report.</p>
+
+    <h3>Credit Cards</h3>
+    <p>Detects Visa, Mastercard, Amex, Discover, and Maestro — with or without spaces/dashes. Every match is then validated using the <strong>Luhn algorithm</strong> (the same checksum your bank uses). Numbers that fail are silently discarded.</p>
+
+    <h3>Greek AFM (ΑΦΜ)</h3>
+    <p>Detects exactly 9-digit numbers starting with a non-zero digit, then verifies the <strong>GSIS check-digit formula</strong>. Random 9-digit numbers that happen to appear in a document will not trigger a false positive.</p>
+
+    <h3>Email Addresses</h3>
+    <p>Uses a strict RFC 5322 pattern with word boundaries to avoid matching partial strings inside URLs or other data.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       ROADMAP
+  ══════════════════════════════════════ -->
+
+  <div class="roadmap-intro" id="roadmap">
+    <h2>Roadmap &amp; Future Features</h2>
+    <p>
+      The scanner is built on a plug-in detector architecture — adding a new data type
+      requires writing a single class and registering it. No other part of the codebase
+      needs to change. The sections below show every planned expansion, organized by category.
+    </p>
+  </div>
+
+  <!-- Architecture callout -->
+  <div class="arch-callout">
+    <div class="arch-icon">&#128296;</div>
+    <div>
+      <h3>How to add a new detector</h3>
+      <p>
+        Every detector extends <code>BaseDetector</code> in <code>dlp_scanner/detectors.py</code>
+        and implements one method: <code>find_all(line)</code>. It returns a list of
+        <code>(raw_match, masked_value)</code> pairs. The scanner and reporter require zero changes.
+        This means the project can grow from 3 detectors to 30 without touching the core architecture.
+      </p>
+    </div>
+  </div>
+
+  <div class="roadmap-grid">
+
+    <!-- Greek & European -->
+    <div class="roadmap-card theme-greek">
+      <div class="roadmap-card-header">
+        <div class="icon">&#127468;&#127479;</div>
+        <div>
+          <h3>Greek &amp; European PII</h3>
+          <p>Citizen identity data</p>
+        </div>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>AMKA — Social Security Number</strong>
+            <span>11-digit, e.g. 12345678901</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Greek ID Card Number</strong>
+            <span>e.g. AB 123456</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Greek Passport Number</strong>
+            <span>e.g. AE1234567</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Greek Phone Number</strong>
+            <span>Mobile 69X / Landline 2X</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>EU VAT Number</strong>
+            <span>e.g. EL123456789</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Financial -->
+    <div class="roadmap-card theme-fin">
+      <div class="roadmap-card-header">
+        <div class="icon">&#127968;</div>
+        <div>
+          <h3>Financial Data</h3>
+          <p>Banking &amp; payment identifiers</p>
+        </div>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>IBAN (Greek &amp; International)</strong>
+            <span>e.g. GR1601101250000000012300695</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>SWIFT / BIC Code</strong>
+            <span>e.g. BNGRGRAA</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Crypto Wallet Address</strong>
+            <span>Bitcoin, Ethereum</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Developer / Tech Secrets -->
+    <div class="roadmap-card theme-tech">
+      <div class="roadmap-card-header">
+        <div class="icon">&#128272;</div>
+        <div>
+          <h3>Developer Secrets</h3>
+          <p>Credentials &amp; tokens in code</p>
+        </div>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>API Keys &amp; Tokens</strong>
+            <span>e.g. api_key = "sk-abc123..."</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>AWS Access Keys</strong>
+            <span>e.g. AKIAIOSFODNN7EXAMPLE</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Private Keys (RSA / SSH)</strong>
+            <span>-----BEGIN RSA PRIVATE KEY-----</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>JWT Tokens</strong>
+            <span>eyJhbGciOiJIUzI1NiJ9...</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Database Connection Strings</strong>
+            <span>mongodb://user:pass@host</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal Data -->
+    <div class="roadmap-card theme-person">
+      <div class="roadmap-card-header">
+        <div class="icon">&#128100;</div>
+        <div>
+          <h3>Personal Data</h3>
+          <p>General PII categories</p>
+        </div>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Date of Birth</strong>
+            <span>15/03/1990, 1990-03-15</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>US Social Security Number</strong>
+            <span>e.g. 123-45-6789</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Physical Address (Greek)</strong>
+            <span>Street + city + postal code</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Infrastructure -->
+    <div class="roadmap-card theme-infra">
+      <div class="roadmap-card-header">
+        <div class="icon">&#128421;</div>
+        <div>
+          <h3>Network &amp; Infrastructure</h3>
+          <p>System-level identifiers</p>
+        </div>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>IPv4 Address</strong>
+            <span>e.g. 192.168.1.1</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>IPv6 Address</strong>
+            <span>e.g. 2001:db8::1</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>MAC Address</strong>
+            <span>e.g. 00:1A:2B:3C:4D:5E</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output & UX -->
+    <div class="roadmap-card theme-output">
+      <div class="roadmap-card-header">
+        <div class="icon">&#128202;</div>
+        <div>
+          <h3>Output &amp; UX Improvements</h3>
+          <p>How results are delivered</p>
+        </div>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>HTML Report</strong>
+            <span>Visual, browser-based report</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Severity Levels</strong>
+            <span>Critical / High / Medium / Low</span>
+          </div>
+          <span class="pill pill-soon">Planned</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Scan .pdf and .docx files</strong>
+            <span>Beyond .txt and .csv</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Config file support</strong>
+            <span>YAML/JSON config instead of CLI flags</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="dot"></div>
+          <div class="item-body">
+            <strong>Scheduled / automated scans</strong>
+            <span>Run on a timer, email results</span>
+          </div>
+          <span class="pill pill-future">Future</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end roadmap-grid -->
+
+  <!-- Legend -->
+  <div class="card" style="padding: 22px 30px;">
+    <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:center;">
+      <strong style="color:#0f3460; font-size:0.9rem;">Legend:</strong>
+      <span><span class="pill pill-live" style="margin:0 6px 0 0;">Live</span>Already implemented</span>
+      <span><span class="pill pill-soon" style="margin:0 6px 0 0;">Planned</span>Next release</span>
+      <span><span class="pill pill-future" style="margin:0 6px 0 0;">Future</span>On the backlog</span>
+    </div>
+  </div>
+
+  <!-- ══ PROJECT FILES ══ -->
+  <div class="card" id="structure">
+    <h2>Project Files Explained</h2>
+    <div class="tree">
+      <span class="folder">dlp-scanner/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">dlp_scanner/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">models.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># The structure of a single finding</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">detectors.py</span>&nbsp;&nbsp;&nbsp;<span class="comment"># Pattern matching + validation logic</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">scanner.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Walks folders and reads files</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">reporter.py</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Writes JSON / CSV reports</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="folder">sample_data/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">customers.csv</span>&nbsp;&nbsp;<span class="comment"># Synthetic test data (no real PII)</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">notes.txt</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Prose document with test patterns</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">latin1_notes.txt</span>&nbsp;<span class="comment"># Tests Latin-1 encoding fallback</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">main.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Run this file to start the scanner</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">requirements.txt</span>&nbsp;<span class="comment"># No external packages needed</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">README.html</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># This page</span>
+    </div>
+  </div>
+
+  <!-- ══ NOTES ══ -->
+  <div class="card" id="notes">
+    <h2>Important Notes</h2>
+    <div class="warn-box">
+      <strong>Only scan folders you are authorized to access.</strong><br>
+      This tool is intended for internal auditing by authorized personnel.
+      Unauthorized scanning may violate GDPR and Greek Law 4624/2019.
+    </div>
+    <div class="info-box">
+      <strong>Report files are excluded from git.</strong><br>
+      The <code>.gitignore</code> ensures that generated <code>.json</code> and <code>.csv</code>
+      reports are never accidentally committed to GitHub.
+    </div>
+    <div class="info-box">
+      <strong>Unreadable files are skipped safely.</strong><br>
+      If a file has permission restrictions or an unsupported encoding, the scanner
+      logs a warning and continues without crashing.
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  DLP Scanner / Auditor &nbsp;|&nbsp; MIT License &nbsp;|&nbsp; ISO 27001 Aligned
+</footer>
+
+</body>
+</html>

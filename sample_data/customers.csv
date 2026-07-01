@@ -1,0 +1,7 @@
+id,name,email,card_number,afm,notes
+1,Αλέξανδρος Παπαδόπουλος,alex.papadopoulos@example.gr,4532015112830366,123456787,Premium customer — valid Visa + valid AFM
+2,Maria Stavridou,m.stavridou@company.com,5425233430109903,987654322,Standard plan — valid MC + valid AFM
+3,John Smith,john.smith@mail.co.uk,378282246310005,543218766,Amex card holder — valid AFM
+4,Ελένη Κωνσταντίνου,eleni.k@business.gr,6011111111111117,111111112,Discover card — valid AFM
+5,Invalid Card Test,no_pii@example.com,1234567890123456,000000001,CC and AFM should NOT appear (Luhn fail + AFM fails check digit)
+6,Nikos Georgiou,nikos.g@enterprise.gr,5105105105105100,999999997,Another Mastercard — valid AFM
